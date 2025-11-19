@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: registry.digitalocean.com
-  IMAGE_NAME: knowted-server/app
+  IMAGE_NAME: knowted
   REGISTRY_NAME: knowted
 
 jobs:
@@ -63,15 +63,12 @@ jobs:
           if [[ ${{ github.ref }} == 'refs/heads/production' ]]; then
             echo "ENVIRONMENT_TAG=production" >> $GITHUB_ENV
             echo "ENVIRONMENT_NAME=Production" >> $GITHUB_ENV
-            echo "REGISTRY_TAG=${{ env.REGISTRY_NAME }}/${{ env.REGISTRY_NAME }}:production" >> $GITHUB_ENV
           elif [[ ${{ github.ref }} == 'refs/heads/dev' ]] || [[ ${{ github.ref }} == 'refs/heads/develop' ]]; then
-            echo "ENVIRONMENT_TAG=dev" >> $GITHUB_ENV
+            echo "ENVIRONMENT_TAG=staging" >> $GITHUB_ENV
             echo "ENVIRONMENT_NAME=Development" >> $GITHUB_ENV
-            echo "REGISTRY_TAG=${{ env.REGISTRY_NAME }}/${{ env.REGISTRY_NAME }}:staging" >> $GITHUB_ENV
           fi
           echo "📋 Deploying to: ${{ env.ENVIRONMENT_NAME }}"
-          echo "🏷️  Primary tag: ${{ env.REGISTRY }}/${{ env.REGISTRY_TAG }}"
-          echo "🏷️  Also tagged as: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}"
+          echo "🏷️  Image will be tagged as: ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -91,9 +88,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.REGISTRY_TAG }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}-${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}
+            ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}-${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -101,8 +97,7 @@ jobs:
         if: success()
         run: |
           echo "✅ Successfully pushed backend image to ${{ env.ENVIRONMENT_NAME }}!"
-          echo "🏷️  Primary tag: ${{ env.REGISTRY }}/${{ env.REGISTRY_TAG }}"
-          echo "🏷️  Also tagged as: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}"
+          echo "🏷️  Image tagged as: ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}"
           echo "📦 SHA: ${{ github.sha }}"
           echo "🚀 Build completed at $(date)"
 
