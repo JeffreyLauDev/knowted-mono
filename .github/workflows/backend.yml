@@ -11,7 +11,7 @@ on:
 env:
   REGISTRY: registry.digitalocean.com
   IMAGE_NAME: knowted
-  REGISTRY_NAME: knowted
+  REGISTRY_NAME: knowted-backend
 
 jobs:
   test:

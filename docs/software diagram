@@ -1,0 +1,56 @@
+graph TB
+    subgraph "Frontend"
+        A["🖥️ Vercel<br/>Vite/React"]
+    end
+    
+    subgraph "Backend Layer"
+        B["🔧 DigitalOcean<br/>NestJS API<br/>Proxy Server"]
+    end
+    
+    subgraph "Data Layer"
+        D["🗄️ Supabase<br/>Postgres DB + Storage + Auth<br/>Users, Meetings, Metadata<br/>Embeddings, Agent State, JWT Tokens"]
+    end
+    
+    subgraph "AI & Processing Workers"
+        C["🤖 AI Agents<br/>LangGraph Workers"]
+        I["📞 Meeting Basses<br/>SQS Microservice"]
+        T["🎙️ Transcription Worker<br/>SQS Task Consumer"]
+    end
+    
+    subgraph "Storage & Queue"
+        H["📨 AWS SQS<br/>Task Queue"]
+        F["☁️ AWS S3<br/>Recordings"]
+    end
+    
+    subgraph "External Services"
+        G["🎙️ AWS Transcribe"]
+    end
+    
+    A -->|API Requests| B
+    A -->|Auth via JWT| D
+    A -->|Direct Chat| C
+    
+    B -->|Read/Write| D
+    B -->|Proxy Requests| C
+    B -->|Push Tasks| H
+    
+    H -->|Pull Meeting Tasks| I
+    H -->|Pull Transcription Tasks| T
+    
+    C -->|API Calls| B
+    I -->|API Calls| B
+    T -->|API Calls| B
+    
+    T -->|Download Recording| F
+    F -->|Send for Transcription| G
+    G -->|Store Transcript| F
+    
+    style A fill:#2563eb,stroke:#1e40af,stroke-width:2px,color:#fff
+    style B fill:#dc2626,stroke:#991b1b,stroke-width:2px,color:#fff
+    style D fill:#7c3aed,stroke:#5b21b6,stroke-width:2px,color:#fff
+    style C fill:#059669,stroke:#065f46,stroke-width:2px,color:#fff
+    style I fill:#059669,stroke:#065f46,stroke-width:2px,color:#fff
+    style T fill:#059669,stroke:#065f46,stroke-width:2px,color:#fff
+    style H fill:#d97706,stroke:#92400e,stroke-width:2px,color:#fff
+    style F fill:#ea580c,stroke:#b45309,stroke-width:2px,color:#fff
+    style G fill:#0369a1,stroke:#075985,stroke-width:2px,color:#fff
