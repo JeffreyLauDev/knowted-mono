@@ -403,7 +403,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setState((prev) => ({ ...prev, loading: false }));
     }
   };
-
+  //logout
   const logout = async (): Promise<void> => {
     try {
       const { error } = await supabase.auth.signOut();
