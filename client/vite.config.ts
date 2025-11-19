@@ -5,10 +5,8 @@ import { fileURLToPath } from "url";
 import { defineConfig } from "vite";
 
 // Get the directory where this config file is located
-// This ensures it works in both local and CI environments
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// Use absolute path resolution - works in monorepo regardless of working directory
 const srcPath = path.resolve(__dirname, 'src');
 
 // https://vitejs.dev/config/
@@ -29,8 +27,6 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": srcPath,
-    },
-    extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json'],
-    preserveSymlinks: false,
+    }
   },
 }));
