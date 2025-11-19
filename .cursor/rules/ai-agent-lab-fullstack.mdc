@@ -37,6 +37,8 @@ alwaysApply: true
 26. Test files should be organized around business features, not technical implementation. Each test should have a descriptive name that clearly conveys the business scenario it validates, and provide enough context to show which business rules are being tested. Repetitive setup should be minimized with shared helpers or fixtures, and technical edge cases should be separated from core business logic tests. This makes tests easier to read, understand, and maintain, and ensures they reflect real business behavior rather than just code structure.
 27. Unless it is mentioned, do not create a new endpoint in controller or create a new services. We are shaping for changes, dont need to create more endpoints
 28. STOP CREATING MD FILES
+29. DO NOT CREATE MD FILES
+39. 
 
 ### Code Quality Rules
 

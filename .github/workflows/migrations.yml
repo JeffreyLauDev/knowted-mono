@@ -1,0 +1,178 @@
+name: Database Migrations
+
+on:
+  push:
+    branches: [dev, develop, production]
+    paths:
+      - 'server/src/migrations/**'
+      - 'server/typeorm.config.ts'
+      - '.github/workflows/migrations.yml'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Choose action'
+        required: true
+        type: choice
+        options:
+          - migrate-production
+          - rollback-production
+      version:
+        description: 'Version (for rollback only, use previous version)'
+        required: false
+        type: string
+
+jobs:
+  # Auto-run database migrations for dev branch
+  migrate-dev:
+    name: Run Database Migrations (Dev)
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+    environment: development
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: pnpm install --frozen-lockfile
+
+      - name: Run database migrations (Dev)
+        working-directory: ./server
+        env:
+          NODE_ENV: development
+          DB_HOST: ${{ secrets.DEV_DB_HOST }}
+          DB_PORT: ${{ secrets.DEV_DB_PORT }}
+          DB_USERNAME: ${{ secrets.DEV_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
+          DB_DATABASE: ${{ secrets.DEV_DB_DATABASE }}
+        run: |
+          echo "🗄️ Running database migrations for Development environment..."
+          echo "🔍 Environment variables:"
+          echo "🔍 DB_HOST: $DB_HOST"
+          echo "🔍 DB_PORT: $DB_PORT"
+          echo "🔍 DB_USERNAME: $DB_USERNAME"
+          echo "🔍 DB_DATABASE: $DB_DATABASE"
+          npm run typeorm -- migration:run -d typeorm.config.ts
+          echo "✅ Development migrations completed successfully!"
+
+  # Manual production database migration
+  migrate-production:
+    name: Run Database Migrations (Production)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'migrate-production'
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: pnpm install --frozen-lockfile
+
+      - name: Show pending migrations
+        working-directory: ./server
+        env:
+          NODE_ENV: production
+          DB_HOST: ${{ secrets.PROD_DB_HOST }}
+          DB_PORT: ${{ secrets.PROD_DB_PORT }}
+          DB_USERNAME: ${{ secrets.PROD_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          DB_DATABASE: ${{ secrets.PROD_DB_DATABASE }}
+        run: |
+          echo "📋 Showing pending migrations..."
+          npm run typeorm -- migration:show -d typeorm.config.ts
+
+      - name: Run database migrations (Production)
+        working-directory: ./server
+        env:
+          NODE_ENV: production
+          DB_HOST: ${{ secrets.PROD_DB_HOST }}
+          DB_PORT: ${{ secrets.PROD_DB_PORT }}
+          DB_USERNAME: ${{ secrets.PROD_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          DB_DATABASE: ${{ secrets.PROD_DB_DATABASE }}
+        run: |
+          echo "🚨 Running database migrations for PRODUCTION environment..."
+          echo "⚠️  This will modify the production database!"
+          NODE_ENV=production npm run typeorm -- migration:run -d typeorm.config.ts
+          echo "✅ Production migrations completed successfully!"
+
+  # Manual production rollback
+  rollback-production:
+    name: Rollback Database Migrations (Production)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'rollback-production'
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: pnpm install --frozen-lockfile
+
+      - name: Show current migrations
+        working-directory: ./server
+        env:
+          NODE_ENV: production
+          DB_HOST: ${{ secrets.PROD_DB_HOST }}
+          DB_PORT: ${{ secrets.PROD_DB_PORT }}
+          DB_USERNAME: ${{ secrets.PROD_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          DB_DATABASE: ${{ secrets.PROD_DB_DATABASE }}
+        run: |
+          echo "📋 Current migration status..."
+          npm run typeorm -- migration:show -d typeorm.config.ts
+
+      - name: Rollback database migrations (Production)
+        working-directory: ./server
+        env:
+          NODE_ENV: production
+          DB_HOST: ${{ secrets.PROD_DB_HOST }}
+          DB_PORT: ${{ secrets.PROD_DB_PORT }}
+          DB_USERNAME: ${{ secrets.PROD_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          DB_DATABASE: ${{ secrets.PROD_DB_DATABASE }}
+        run: |
+          echo "🚨 ROLLING BACK database migrations for PRODUCTION environment..."
+          echo "⚠️  This will REVERT the last migration!"
+          echo "🔄 Rolling back to version: ${{ github.event.inputs.version }}"
+          NODE_ENV=production npm run typeorm -- migration:revert -d typeorm.config.ts
+          echo "✅ Production rollback completed successfully!"
+

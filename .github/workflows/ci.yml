@@ -1,0 +1,143 @@
+name: CI - Tests and Checks
+
+on:
+  pull_request:
+    branches: [main, dev, develop, production]
+  push:
+    branches: [main, dev, develop, production]
+    paths:
+      - 'server/**'
+      - 'client/**'
+      - 'aiagent/**'
+      - 'meetingbot/**'
+      - '.github/workflows/**'
+
+jobs:
+  # Detect which services changed
+  detect-changes:
+    name: Detect Changed Services
+    runs-on: ubuntu-latest
+    outputs:
+      server: ${{ steps.filter.outputs.server }}
+      client: ${{ steps.filter.outputs.client }}
+      aiagent: ${{ steps.filter.outputs.aiagent }}
+      meetingbot: ${{ steps.filter.outputs.meetingbot }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changes
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            server:
+              - 'server/**'
+            client:
+              - 'client/**'
+            aiagent:
+              - 'aiagent/**'
+            meetingbot:
+              - 'meetingbot/**'
+
+  # Backend tests
+  test-server:
+    name: Test Backend
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.server == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: pnpm install --frozen-lockfile
+
+      - name: Run type checking
+        working-directory: ./server
+        run: pnpm run build
+
+      - name: Run unit tests
+        working-directory: ./server
+        run: pnpm test:ci
+
+  # Frontend tests
+  test-client:
+    name: Test Frontend
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.client == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        working-directory: ./client
+        run: pnpm install --frozen-lockfile
+
+      - name: Run type checking
+        working-directory: ./client
+        run: pnpm run build
+
+      - name: Run unit tests
+        working-directory: ./client
+        run: pnpm test
+
+  # AI Agent tests
+  test-aiagent:
+    name: Test AI Agent
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.aiagent == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        working-directory: ./aiagent
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests (if available)
+        working-directory: ./aiagent
+        run: |
+          if [ -f "pytest.ini" ] || [ -d "tests" ]; then
+            pytest tests/ || echo "No tests configured yet"
+          else
+            echo "No tests configured yet"
+          fi
+

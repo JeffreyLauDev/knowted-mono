@@ -1,0 +1,100 @@
+name: Backend Deployment
+
+on:
+  push:
+    branches: [dev, develop, production]
+    paths:
+      - 'server/**'
+      - '.github/workflows/backend.yml'
+  workflow_dispatch:
+
+env:
+  REGISTRY: registry.digitalocean.com
+  IMAGE_NAME: knowted-server/app
+
+jobs:
+  test:
+    name: Run Backend Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: pnpm install --frozen-lockfile
+
+      - name: Run type checking
+        working-directory: ./server
+        run: pnpm run build
+
+      - name: Run unit tests
+        working-directory: ./server
+        run: pnpm test:ci
+
+  build-and-push:
+    name: Build and Deploy Backend
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/production'
+    environment: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set environment tag
+        run: |
+          if [[ ${{ github.ref }} == 'refs/heads/production' ]]; then
+            echo "ENVIRONMENT_TAG=production" >> $GITHUB_ENV
+            echo "ENVIRONMENT_NAME=Production" >> $GITHUB_ENV
+          elif [[ ${{ github.ref }} == 'refs/heads/dev' ]] || [[ ${{ github.ref }} == 'refs/heads/develop' ]]; then
+            echo "ENVIRONMENT_TAG=dev" >> $GITHUB_ENV
+            echo "ENVIRONMENT_NAME=Development" >> $GITHUB_ENV
+          fi
+          echo "📋 Deploying to: ${{ env.ENVIRONMENT_NAME }}"
+          echo "🏷️  Image will be tagged as: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to DigitalOcean Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: docker
+          password: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./server
+          file: ./server/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "✅ Successfully pushed backend image to ${{ env.ENVIRONMENT_NAME }}!"
+          echo "🏷️  Image tagged as: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}"
+          echo "📦 SHA: ${{ github.sha }}"
+          echo "🚀 Build completed at $(date)"
+

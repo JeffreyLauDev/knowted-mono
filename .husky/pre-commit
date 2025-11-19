@@ -1,0 +1,70 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks for monorepo..."
+
+# Get list of changed files
+CHANGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Check if server files changed
+if echo "$CHANGED_FILES" | grep -q "^server/"; then
+  echo "📦 Server files changed - running checks..."
+  cd server
+  
+  echo "🔧 Running TypeScript type checking..."
+  pnpm run build || {
+    echo "❌ TypeScript type check failed"
+    exit 1
+  }
+  
+  echo "🧪 Running unit tests..."
+  pnpm test:ci || {
+    echo "❌ Tests failed"
+    exit 1
+  }
+  
+  cd ..
+fi
+
+# Check if client files changed
+if echo "$CHANGED_FILES" | grep -q "^client/"; then
+  echo "📦 Client files changed - running checks..."
+  cd client
+  
+  echo "🔧 Running TypeScript type checking..."
+  pnpm run build || {
+    echo "❌ TypeScript type check failed"
+    exit 1
+  }
+  
+  echo "🧪 Running unit tests..."
+  pnpm test || {
+    echo "❌ Tests failed"
+    exit 1
+  }
+  
+  cd ..
+fi
+
+# Check if aiagent files changed
+if echo "$CHANGED_FILES" | grep -q "^aiagent/"; then
+  echo "📦 AI Agent files changed - running checks..."
+  cd aiagent
+  
+  # Check if virtual environment exists
+  if [ ! -d "venv" ]; then
+    echo "⚠️  Virtual environment not found. Skipping AI agent checks."
+  else
+    echo "🔧 Running Python syntax check..."
+    source venv/bin/activate
+    python -m py_compile $(find . -name "*.py" -not -path "./venv/*" -not -path "./__pycache__/*") || {
+      echo "❌ Python syntax check failed"
+      exit 1
+    }
+  fi
+  
+  cd ..
+fi
+
+echo "✅ All pre-commit checks passed!"
+
