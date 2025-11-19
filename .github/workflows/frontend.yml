@@ -1,4 +1,4 @@
-name: Frontend Deployment
+name: Frontend CI/CD Pipeline
 
 on:
   push:
@@ -21,12 +21,13 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9
+          run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
+          cache: ''
 
       - name: Install dependencies
         working-directory: ./client
@@ -40,7 +41,7 @@ jobs:
         working-directory: ./client
         run: pnpm test
 
-  deploy-vercel:
+  deploy:
     name: Deploy to Vercel
     runs-on: ubuntu-latest
     needs: [test]
@@ -54,12 +55,13 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9
+          run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
+          cache: ''
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
@@ -81,5 +83,3 @@ jobs:
         run: |
           echo "✅ Successfully deployed frontend to Vercel!"
           echo "📦 SHA: ${{ github.sha }}"
-          echo "🚀 Deployment completed at $(date)"
-
