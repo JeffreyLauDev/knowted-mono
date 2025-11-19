@@ -21,7 +21,6 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:ci": "jest --coverage --watchAll=false --passWithNoTests",
-    "prepare": "husky install",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:create": "npm run typeorm -- migration:create",
     "stripe:local:listen": "stripe listen --forward-to localhost:3000/api/v1/stripe/webhook",
