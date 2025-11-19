@@ -3,7 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { RESOURCE_CONFIG } from '@/routes/resources';
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 const Organization = (): JSX.Element => {
   const { isAuthenticated, loading, organization, user } = useAuth();
