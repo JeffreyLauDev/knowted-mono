@@ -27,12 +27,10 @@ export default defineConfig(({ mode }) => ({
     componentTagger(),
   ].filter(Boolean),
   resolve: {
-    alias: [
-      {
-        find: /^@\/(.*)$/,
-        replacement: path.resolve(srcPath, '$1'),
-      },
-    ],
+    alias: {
+      "@": srcPath,
+    },
     extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json'],
+    preserveSymlinks: false,
   },
 }));
