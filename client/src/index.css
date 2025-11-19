@@ -1,0 +1,190 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  :root {
+    --background: 43 33% 96%;
+    /* #FAF5EE - only for background */
+    --foreground: 154 48% 21%;
+    /* #1D503A */
+
+    --card: 154 48% 98%;
+    /* Light emerald for cards */
+    --card-foreground: 154 48% 21%;
+
+    --popover: 154 48% 98%;
+    /* Light emerald for popovers */
+    --popover-foreground: 154 48% 21%;
+
+    --primary: 154 48% 21%;
+    --primary-foreground: 43 33% 96%;
+    /* Eggshell white for button text */
+
+    --secondary: 154 48% 95%;
+    --secondary-foreground: 154 48% 21%;
+
+    --muted: 154 48% 95%;
+    --muted-foreground: 0 0% 32.34%;
+
+    --accent: 154 48% 30%;
+    --accent-foreground: 43 33% 96%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 43 33% 96%;
+
+    --border: 154 48% 90%;
+    --input: 154 48% 90%;
+    --ring: 154 48% 21%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar specific colors */
+    --sidebar-background: 154 48% 21%;
+    --sidebar-foreground: 43 33% 96%;
+    --sidebar-primary: 43 33% 96%;
+    --sidebar-primary-foreground: 154 48% 21%;
+    --sidebar-accent: 154 48% 30%;
+    --sidebar-accent-foreground: 154 48% 21%;
+    --sidebar-border: 154 48% 30%;
+    --sidebar-ring: 43 33% 96%;
+  }
+
+  .dark {
+    --background: 0 0% 13%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 18%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 18%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 13%;
+
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 0 0% 18%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 100%;
+
+    --sidebar-background: 154 48% 21%;
+    --sidebar-foreground: 43 33% 96%;
+    --sidebar-primary: 43 33% 96%;
+    --sidebar-primary-foreground: 154 48% 21%;
+    --sidebar-accent: 154 48% 30%;
+    --sidebar-accent-foreground: 154 48% 21%;
+    --sidebar-border: 154 48% 30%;
+    --sidebar-ring: 43 33% 96%;
+  }
+}
+
+@layer components {
+  .card-hover {
+    @apply transition-all hover:shadow-md hover:-translate-y-1;
+  }
+
+  .responsive-container {
+    @apply w-full px-4 md:px-6 lg:px-8 mx-auto;
+  }
+
+  .sidebar-icon {
+    @apply h-5 w-5;
+  }
+
+  .cool-card {
+    @apply rounded-xl bg-white shadow-soft border-0 transition-all hover:shadow-card;
+  }
+
+  .gradient-card {
+    @apply rounded-xl border border-white/10 shadow-soft bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm;
+  }
+
+  .glass-card {
+    @apply rounded-xl bg-white/10 backdrop-blur-lg shadow-soft border border-white/20;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-lg transition-colors;
+  }
+
+  .btn-outline {
+    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2 rounded-lg transition-colors;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+
+  .badge-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/80;
+  }
+
+  .badge-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  }
+
+  .badge-outline {
+    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .settings-card {
+    @apply bg-primary/90 text-primary-foreground rounded-xl p-6;
+  }
+
+  .settings-sidebar-item {
+    @apply flex items-center space-x-3 py-3 px-4 rounded-lg text-primary/90 hover:bg-primary/10 transition-colors font-medium;
+  }
+
+  .settings-sidebar-item.active {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  [data-state="active"] {
+    @apply text-black;
+  }
+
+  .data-[state=active]:bg-muted {
+    @apply bg-muted text-black;
+  }
+}
+
+.onboarding-step {
+  @apply opacity-0;
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}

@@ -1,0 +1,31 @@
+# LangChain 1.0 (latest)
+langchain>=1.0.5
+langchain-core>=1.0.4
+
+# Anthropic integration
+langchain-anthropic>=1.0.2
+
+# DeepAgents - Agent harness built on LangGraph
+deepagents
+
+# LangGraph CLI for running agents as a server
+langgraph-cli[inmem]>=0.4.7
+langgraph-api>=0.5.6
+langgraph>=1.0.2
+langgraph-checkpoint>=3.0.1
+
+# RAG and Vector Store
+langchain-community
+langchain-openai
+langchain-postgres  # PostgreSQL vector store implementation
+pgvector  # PostgreSQL vector extension (install via pip or system package)
+
+# HTTP client for API calls
+httpx
+
+# PostgreSQL checkpointer
+langgraph-checkpoint-postgres
+psycopg2-binary
+
+# LangSmith for tracing and feedback
+langsmith>=0.1.0

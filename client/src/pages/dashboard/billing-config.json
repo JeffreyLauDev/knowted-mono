@@ -1,0 +1,368 @@
+{
+    "plans": [
+        {
+            "tier": "free",
+            "name": "Free",
+            "description": "Perfect for getting started. No credit card required.",
+            "monthlyPrice": 0,
+            "annualPrice": 0,
+            "cta": "Get Started Free",
+            "seatLimit": 1,
+            "isPopular": false,
+            "features": [
+                {
+                    "featureType": "meeting_types",
+                    "label": "Meeting Types",
+                    "value": "1 Meeting Type",
+                    "isEnabled": true,
+                    "sortOrder": 2
+                },
+                {
+                    "featureType": "monthly_reports",
+                    "label": "Monthly Reports",
+                    "value": "1 Monthly Report",
+                    "isEnabled": true,
+                    "sortOrder": 3
+                },
+                {
+                    "featureType": "monthly_queries",
+                    "label": "Monthly Queries",
+                    "value": "50 Queries",
+                    "isEnabled": true,
+                    "sortOrder": 4
+                },
+                {
+                    "featureType": "call_minutes",
+                    "label": "Call Minutes",
+                    "value": "500 Call Minutes",
+                    "isEnabled": true,
+                    "sortOrder": 5
+                },
+                {
+                    "featureType": "max_meeting_length",
+                    "label": "Max Meeting Length",
+                    "value": "60 mins Meeting Length",
+                    "isEnabled": true,
+                    "sortOrder": 6
+                },
+                {
+                    "featureType": "ai_memory_retention",
+                    "label": "Memory Retention",
+                    "value": "1 Year AI Memory Retention",
+                    "isEnabled": true,
+                    "sortOrder": 7
+                },
+                {
+                    "featureType": "data_storage",
+                    "label": "Storage",
+                    "value": "1 GB Storage",
+                    "isEnabled": true,
+                    "sortOrder": 8
+                }
+            ],
+            "stripeProductId": null,
+            "stripeMonthlyPriceId": null,
+            "stripeAnnualPriceId": null
+        },
+        {
+            "tier": "personal",
+            "name": "Personal",
+            "description": "Solopreneurs, freelancers, small teams.",
+            "monthlyPrice": 20,
+            "annualPrice": 15,
+            "cta": "Get Started Personal",
+            "seatLimit": 1,
+            "isPopular": false,
+            "features": [
+                {
+                    "featureType": "meeting_types",
+                    "label": "Meeting Types",
+                    "value": "3 Meeting Types",
+                    "isEnabled": true,
+                    "sortOrder": 2
+                },
+                {
+                    "featureType": "monthly_reports",
+                    "label": "Monthly Reports",
+                    "value": "1 Monthly Report",
+                    "isEnabled": true,
+                    "sortOrder": 3
+                },
+                {
+                    "featureType": "monthly_queries",
+                    "label": "Monthly Queries",
+                    "value": "200 Queries",
+                    "isEnabled": true,
+                    "sortOrder": 4
+                },
+                {
+                    "featureType": "call_minutes",
+                    "label": "Call Minutes",
+                    "value": "1,500 Call Minutes",
+                    "isEnabled": true,
+                    "sortOrder": 5
+                },
+                {
+                    "featureType": "max_meeting_length",
+                    "label": "Max Meeting Length",
+                    "value": "90 mins Meeting Length",
+                    "isEnabled": true,
+                    "sortOrder": 6
+                },
+                {
+                    "featureType": "ai_memory_retention",
+                    "label": "Memory Retention",
+                    "value": "2 Years AI Memory Retention",
+                    "isEnabled": true,
+                    "sortOrder": 7
+                },
+                {
+                    "featureType": "data_export",
+                    "label": "Data Export",
+                    "value": null,
+                    "isEnabled": true,
+                    "sortOrder": 8
+                },
+                {
+                    "featureType": "custom_summaries",
+                    "label": "Custom Summaries",
+                    "value": null,
+                    "isEnabled": true,
+                    "sortOrder": 9
+                },
+                {
+                    "featureType": "automatic_speaker_recognition",
+                    "label": "Speaker Recognition",
+                    "value": null,
+                    "isEnabled": true,
+                    "sortOrder": 10
+                },
+                {
+                    "featureType": "data_storage",
+                    "label": "Storage",
+                    "value": "5 GB Storage",
+                    "isEnabled": true,
+                    "sortOrder": 11
+                }
+            ],
+            "stripeProductId": "prod_ScLH1s8l9Ult24",
+            "stripeMonthlyPriceId": "price_1Rh6bLBF6H6cpfkN4sRA4YKu",
+            "stripeAnnualPriceId": "price_1Rh6mLBF6H6cpfkNTZGLZVTC"
+        },
+        {
+            "tier": "business",
+            "name": "Business",
+            "description": "Suits Small to medium Businesses or growing teams.",
+            "monthlyPrice": 35,
+            "annualPrice": 29,
+            "cta": "Get Started Business",
+            "seatLimit": 5,
+            "isPopular": true,
+            "features": [
+                {
+                    "featureType": "meeting_types",
+                    "label": "Meeting Types",
+                    "value": "5 Meeting Types",
+                    "isEnabled": true,
+                    "sortOrder": 2
+                },
+                {
+                    "featureType": "monthly_reports",
+                    "label": "Monthly Reports",
+                    "value": "5 Monthly Reports",
+                    "isEnabled": true,
+                    "sortOrder": 3
+                },
+                {
+                    "featureType": "monthly_queries",
+                    "label": "Monthly Queries",
+                    "value": "1,000 Queries",
+                    "isEnabled": true,
+                    "sortOrder": 4
+                },
+                {
+                    "featureType": "call_minutes",
+                    "label": "Call Minutes",
+                    "value": "3,000 Call Minutes",
+                    "isEnabled": true,
+                    "sortOrder": 5
+                },
+                {
+                    "featureType": "max_meeting_length",
+                    "label": "Max Meeting Length",
+                    "value": "120 mins Meeting Length",
+                    "isEnabled": true,
+                    "sortOrder": 6
+                },
+                {
+                    "featureType": "ai_memory_retention",
+                    "label": "Memory Retention",
+                    "value": "3 Years AI Memory Retention",
+                    "isEnabled": true,
+                    "sortOrder": 7
+                },
+                {
+                    "featureType": "real_time_coaching",
+                    "label": "Real-Time Coaching",
+                    "value": null,
+                    "isEnabled": true,
+                    "sortOrder": 8
+                },
+                {
+                    "featureType": "department_reports",
+                    "label": "Department Reports",
+                    "value": null,
+                    "isEnabled": true,
+                    "sortOrder": 9
+                },
+                {
+                    "featureType": "api_webhooks",
+                    "label": "API Webhooks",
+                    "value": null,
+                    "isEnabled": true,
+                    "sortOrder": 10
+                },
+                {
+                    "featureType": "data_storage",
+                    "label": "Storage",
+                    "value": "15 GB Storage",
+                    "isEnabled": true,
+                    "sortOrder": 11
+                }
+            ],
+            "stripeProductId": "prod_ScLIFZ7DSV0FLW",
+            "stripeMonthlyPriceId": "price_1Rh6bcBF6H6cpfkNOqEhKyUJ",
+            "stripeAnnualPriceId": "price_1Rh6nRBF6H6cpfkN2sTCmRK9"
+        },
+        {
+            "tier": "company",
+            "name": "Company",
+            "description": "Suits Corporations or Large Companies",
+            "monthlyPrice": 60,
+            "annualPrice": 55,
+            "cta": "Get Started Company",
+            "seatLimit": 25,
+            "isPopular": false,
+            "features": [
+                {
+                    "featureType": "meeting_types",
+                    "label": "Meeting Types",
+                    "value": "5 Meeting Types",
+                    "isEnabled": true,
+                    "sortOrder": 2
+                },
+                {
+                    "featureType": "monthly_reports",
+                    "label": "Monthly Reports",
+                    "value": "5 Monthly Reports",
+                    "isEnabled": true,
+                    "sortOrder": 3
+                },
+                {
+                    "featureType": "monthly_queries",
+                    "label": "Monthly Queries",
+                    "value": "5,000 Queries",
+                    "isEnabled": true,
+                    "sortOrder": 4
+                },
+                {
+                    "featureType": "call_minutes",
+                    "label": "Call Minutes",
+                    "value": "10,000 Call Minutes",
+                    "isEnabled": true,
+                    "sortOrder": 5
+                },
+                {
+                    "featureType": "ai_memory_retention",
+                    "label": "Memory Retention",
+                    "value": "5 Years AI Memory Retention",
+                    "isEnabled": true,
+                    "sortOrder": 6
+                },
+                {
+                    "featureType": "video_recording",
+                    "label": "Video Recording",
+                    "value": null,
+                    "isEnabled": true,
+                    "sortOrder": 7
+                },
+                {
+                    "featureType": "brand_voice",
+                    "label": "Brand Voice",
+                    "value": null,
+                    "isEnabled": true,
+                    "sortOrder": 8
+                },
+                {
+                    "featureType": "crm_integration",
+                    "label": "CRM Integration",
+                    "value": null,
+                    "isEnabled": true,
+                    "sortOrder": 9
+                },
+                {
+                    "featureType": "sso_hipaa_security",
+                    "label": "Security",
+                    "value": "SSO/HIPAA Security",
+                    "isEnabled": true,
+                    "sortOrder": 10
+                },
+                {
+                    "featureType": "data_storage",
+                    "label": "Storage",
+                    "value": "50 GB Storage",
+                    "isEnabled": true,
+                    "sortOrder": 11
+                }
+            ],
+            "stripeProductId": "prod_ScLIPLXmhfwive",
+            "stripeMonthlyPriceId": "price_1Rh6nzBF6H6cpfkNMBiZe0gV",
+            "stripeAnnualPriceId": "price_1Rh6bnBF6H6cpfkNYjhqoibt"
+        }
+    ],
+    "addonBundles": [
+        {
+            "name": "Starter",
+            "price": 25,
+            "minutes": 2000,
+            "tagline": "Great for seasonal bursts",
+            "sortOrder": 1
+        },
+        {
+            "name": "Growth",
+            "price": 60,
+            "minutes": 5000,
+            "tagline": "Built for onboarding waves",
+            "sortOrder": 2
+        },
+        {
+            "name": "Scale",
+            "price": 180,
+            "minutes": 15000,
+            "tagline": "Designed for power users",
+            "sortOrder": 3
+        }
+    ],
+    "trustFeatures": [
+        {
+            "icon": "Shield",
+            "title": "Enterprise Security",
+            "description": "SOC 2 Type II certified infrastructure"
+        },
+        {
+            "icon": "Zap",
+            "title": "Rapid Deployment",
+            "description": "Go live in days, not months"
+        },
+        {
+            "icon": "Users",
+            "title": "Dedicated Support",
+            "description": "Your success team from day one"
+        },
+        {
+            "icon": "Clock",
+            "title": "Flexible Scaling",
+            "description": "Grow at your own pace"
+        }
+    ]
+}

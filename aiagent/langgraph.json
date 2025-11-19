@@ -1,0 +1,8 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "knowted_agent": "./knowted_agent.py:knowted_agent"
+  },
+  "env": ".env"
+}
+

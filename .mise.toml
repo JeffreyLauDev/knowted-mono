@@ -1,0 +1,335 @@
+ [tools]
+node = "20"
+pnpm = "9"
+python = "3.11"
+
+[env]
+NODE_ENV = "development"
+# Load local .env file if it exists
+_.file = ".env"
+
+[tasks.setup]
+description = "Setup development environment - install dependencies and start Supabase"
+run = [
+    "echo '🚀 Setting up Knowted development environment...'",
+    "echo '📦 Installing dependencies...'",
+    "mise run install",
+    "echo '🐘 Starting Supabase database...'",
+    "mise run db",
+    "echo '✅ Setup complete!'",
+    "echo ''",
+    "echo '🎯 Next steps:'",
+    "echo '   mise run server    - Start backend server (port 3000)'",
+    "echo '   mise run client    - Start frontend client (port 8080)'",
+    "echo '   mise run aiagent   - Start AI agent (port 2024)'",
+    "echo '   mise run dev       - Start everything together'",
+    "echo ''",
+    "echo '📝 Useful commands:'",
+    "echo '   mise run db:stop   - Stop Supabase'",
+    "echo '   mise run db:reset  - Reset Supabase database'",
+    "echo '   mise run logs      - View Supabase logs'",
+    "echo '   mise run generate:api - Generate API types'"
+]
+
+[tasks.install]
+description = "Install dependencies for all workspaces"
+run = [
+    "echo '📦 Installing client dependencies...'",
+    "cd client && pnpm install",
+    "echo '📦 Installing server dependencies...'",
+    "cd server && pnpm install",
+    "echo '✅ All dependencies installed!'"
+]
+
+[tasks.check-supabase]
+description = "Check if Supabase is running"
+run = '''
+echo "🐘 Checking Supabase status..."
+if cd server && supabase status >/dev/null 2>&1; then
+    echo "✅ Supabase is running"
+    exit 0
+else
+    echo "❌ Supabase is not running"
+    echo "💡 Run 'mise run db' to start Supabase"
+    exit 1
+fi
+'''
+
+[tasks.db]
+description = "Start Supabase local database"
+run = [
+    "echo '🐘 Starting Supabase...'",
+    "cd server && supabase start",
+    "echo ''",
+    "echo '✅ Supabase started!'",
+    "echo '🎯 API URL: http://localhost:54321'",
+    "echo '🎯 Studio: http://localhost:54323'",
+    "echo '🎯 DB Port: 54322'"
+]
+
+[tasks."db:stop"]
+description = "Stop Supabase local database"
+run = [
+    "echo '🛑 Stopping Supabase...'",
+    "cd server && supabase stop",
+    "echo '✅ Supabase stopped'"
+]
+
+[tasks."db:reset"]
+description = "Reset Supabase local database (WARNING: destroys all data)"
+run = [
+    "echo '💥 Resetting Supabase database...'",
+    "cd server && supabase db reset",
+    "echo '✅ Database reset complete'"
+]
+
+[tasks."db:status"]
+description = "Show Supabase status"
+run = "cd server && supabase status"
+
+[tasks.logs]
+description = "View Supabase logs"
+run = "cd server && supabase logs"
+
+[tasks.server]
+description = "Start backend server (requires Supabase to be running)"
+run = '''
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🚀 Starting Backend Server"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+# Kill any existing processes on port 3000
+if lsof -ti :3000 > /dev/null 2>&1; then
+    echo "⚠️  Port 3000 is already in use. Stopping existing processes..."
+    lsof -ti :3000 | xargs kill -9 2>/dev/null || true
+    sleep 1
+fi
+echo "📍 Backend: http://localhost:3000"
+echo "📍 API Docs: http://localhost:3000/api"
+echo "📍 Use Ctrl+C to stop"
+echo ""
+cd server && pnpm start:dev
+'''
+
+[tasks.client]
+description = "Start frontend client"
+run = '''
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🌟 Starting Frontend Client"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+# Kill any existing processes on port 8080
+if lsof -ti :8080 > /dev/null 2>&1; then
+    echo "⚠️  Port 8080 is already in use. Stopping existing processes..."
+    lsof -ti :8080 | xargs kill -9 2>/dev/null || true
+    sleep 1
+fi
+echo "📍 Frontend: http://localhost:8080"
+echo "📍 Use Ctrl+C to stop"
+echo ""
+cd client && pnpm start:dev
+'''
+
+[tasks.dev]
+description = "Start everything - database, server, client, and AI agent (recommended for first-time setup: use 'mise run setup' first)"
+run = '''
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🚀 Starting Knowted Development Environment"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "🐘 Starting Supabase database..."
+cd server && supabase start &
+SUPABASE_PID=$!
+echo "   ⏳ Waiting for Supabase to be ready..."
+sleep 8
+echo "   ✅ Supabase is ready"
+echo "   📍 API: http://localhost:54321"
+echo "   📍 Studio: http://localhost:54323"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🚀 Starting backend server..."
+# Kill any existing processes on port 3000
+if lsof -ti :3000 > /dev/null 2>&1; then
+    echo "   ⚠️  Port 3000 is already in use. Stopping existing processes..."
+    lsof -ti :3000 | xargs kill -9 2>/dev/null || true
+    sleep 1
+fi
+cd server && pnpm start:dev &
+SERVER_PID=$!
+echo "   ⏳ Waiting for server to start..."
+sleep 3
+echo "   ✅ Backend server starting"
+echo "   📍 Backend: http://localhost:3000"
+echo "   📍 API Docs: http://localhost:3000/api"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🤖 Starting LangGraph AI agent..."
+# Kill any existing langgraph processes on port 2024
+if lsof -ti :2024 > /dev/null 2>&1; then
+    echo "   ⚠️  Port 2024 is already in use. Stopping existing processes..."
+    pkill -f "langgraph dev --port 2024" 2>/dev/null || true
+    sleep 1
+fi
+cd aiagent
+if [ ! -d venv ]; then
+    echo "   ⚠️  Virtual environment not found. Setting up..."
+    cd ..
+    mise run aiagent:install:requirements
+    cd aiagent
+fi
+source venv/bin/activate && langgraph dev --port 2024 &
+AIAGENT_PID=$!
+echo "   ⏳ Waiting for AI agent to start..."
+sleep 3
+echo "   ✅ AI agent starting"
+echo "   📍 Agent API: http://localhost:2024"
+echo "   📍 Agent Docs: http://localhost:2024/docs"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🌟 Starting frontend client..."
+# Kill any existing processes on port 8080
+if lsof -ti :8080 > /dev/null 2>&1; then
+    echo "   ⚠️  Port 8080 is already in use. Stopping existing processes..."
+    lsof -ti :8080 | xargs kill -9 2>/dev/null || true
+    sleep 1
+fi
+cd ../client
+echo "   ⏳ Starting Vite dev server..."
+pnpm start:dev
+'''
+
+[tasks."generate:api"]
+description = "Generate API types for frontend from backend OpenAPI spec"
+run = [
+    "echo '📄 Generating API types...'",
+    "cd client && pnpm generate-api",
+    "echo '✅ API types generated!'"
+]
+
+[tasks."generate:api:watch"]
+description = "Watch and regenerate API types on changes"
+run = "cd client && pnpm generate-api:watch"
+
+[tasks.test]
+description = "Run all tests"
+run = [
+    "echo '🧪 Running server tests...'",
+    "cd server && pnpm test",
+    "echo '🧪 Running client tests...'",
+    "cd client && pnpm test"
+]
+
+[tasks."test:watch"]
+description = "Run tests in watch mode"
+run = [
+    "echo '🧪 Running server tests in watch mode...'",
+    "cd server && pnpm test:watch"
+]
+
+[tasks.lint]
+description = "Run linters"
+run = [
+    "echo '🔍 Linting server...'",
+    "cd server && pnpm lint",
+    "echo '🔍 Linting client...'",
+    "cd client && pnpm lint"
+]
+
+[tasks.build]
+description = "Build both server and client for production"
+run = [
+    "echo '🏗️  Building server...'",
+    "cd server && pnpm build",
+    "echo '🏗️  Building client...'",
+    "cd client && pnpm build",
+    "echo '✅ Build complete!'"
+]
+
+[tasks."supabase:types"]
+description = "Generate Supabase TypeScript types"
+run = [
+    "echo '📄 Generating Supabase types...'",
+    "cd client && pnpm supabase:types:local",
+    "echo '✅ Supabase types generated!'"
+]
+
+[tasks."aiagent:setup"]
+description = "Setup Python virtual environment for aiagent"
+run = [
+    "echo '🐍 Setting up Python environment for aiagent...'",
+    "cd aiagent && python -m venv venv || python3 -m venv venv",
+    "echo '✅ Virtual environment created!'",
+    "echo '💡 Activate with: source aiagent/venv/bin/activate'"
+]
+
+[tasks."aiagent:install"]
+description = "Install LangChain 1.0 and dependencies in aiagent"
+run = [
+    "echo '📦 Installing LangChain 1.0 and dependencies...'",
+    "cd aiagent",
+    "if [ ! -d venv ]; then mise run \"aiagent:setup\"; fi",
+    "source venv/bin/activate && pip install --pre -U langchain",
+    "echo '✅ LangChain 1.0 installed!'",
+    "echo ''",
+    "echo '💡 To activate the environment:'",
+    "echo '   source aiagent/venv/bin/activate'",
+    "echo ''",
+    "echo '💡 To install from requirements.txt:'",
+    "echo '   source aiagent/venv/bin/activate && pip install -r aiagent/requirements.txt'"
+]
+
+[tasks."aiagent:install:requirements"]
+description = "Install all dependencies from requirements.txt"
+run = [
+    "echo '📦 Installing requirements from requirements.txt...'",
+    "cd aiagent",
+    "if [ ! -d venv ]; then mise run \"aiagent:setup\"; fi",
+    "source venv/bin/activate && pip install -r requirements.txt",
+    "echo '✅ All dependencies installed!'"
+]
+
+[tasks.aiagent]
+description = "Start LangGraph AI agent server"
+run = '''
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🤖 Starting LangGraph AI Agent"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+# Kill any existing langgraph processes on port 2024
+if lsof -ti :2024 > /dev/null 2>&1; then
+    echo "⚠️  Port 2024 is already in use. Stopping existing processes..."
+    # Kill processes using port 2024 directly
+    lsof -ti :2024 | xargs kill -9 2>/dev/null || true
+    # Also try to kill langgraph processes
+    pkill -f "langgraph dev" 2>/dev/null || true
+    pkill -f "langgraph.*2024" 2>/dev/null || true
+    # Wait for port to be released
+    sleep 2
+    # Verify port is free
+    if lsof -ti :2024 > /dev/null 2>&1; then
+        echo "❌ Port 2024 is still in use. Please manually stop the process."
+        exit 1
+    fi
+fi
+echo "📍 Agent API: http://localhost:2024"
+echo "📍 API Docs: http://localhost:2024/docs"
+echo "📍 Studio UI: https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024"
+echo "📍 Use Ctrl+C to stop"
+echo ""
+cd aiagent
+if [ ! -d venv ]; then
+    echo "⚠️  Virtual environment not found. Setting up..."
+    cd ..
+    mise run aiagent:install:requirements
+    cd aiagent
+fi
+source venv/bin/activate && langgraph dev --port 2024
+'''
+
+
+# Quick shortcuts
+[tasks.s]
+alias = "setup"
+
+[tasks.d]
+alias = "dev"

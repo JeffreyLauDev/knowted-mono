@@ -1,0 +1,103 @@
+---
+alwaysApply: true
+---
+1. for client side, when we call api, we have to use orval generated API, never use fetch or axios directly. Sometimes the generated API doesn't have the respond type, in that  case, we need to let backend to generate the DTO, so that we can go back to the frontend and use command line to generate:api again.   
+
+2. I always turn on both server and client side for you, so never run command to start both server and client, otherwise, the port will be occupied
+
+3. Never generate .md file or example files, as I am not reading them or using them at all. this is just waste of token and time
+
+4. When we are writing some thing that is logic heavy for both client side or server side, We have to write unit test. for client side with jest, always use mock, not integrated testing, mainly testing the logic
+
+5. ALways try to fix it for me, dont ask too many questions 
+
+6. for backend, never use createQueryBuilder, we must use typeorm for all the query or migrations
+
+7. for backend, never create mock data, we are always using data from database.
+
+8. in client, we do not want client/src/components/examples folder, and we dont want examples
+
+9. you could regenerate the type or write the API again, if we are using as, most likely something is already wrong, fix the backend or frontend, never use as
+10. use pnpm run generate:api to generate the new API, Make sure we have used API property in API and generate all response dto so that orval works 
+11. if it didn't pick up the outbound call endpoint meaning that we are missing the ApiBody decorator or API property decorator for that endpoint, make sure we check the controller to see whether we have set this up right
+12. Always use DTO classes for all request bodies — never inline objects or any.
+13. Decorate every DTO property with @ApiProperty() (or @ApiPropertyOptional() where needed).
+14. Always use DTOs for responses — don’t return raw entities or any.
+15. Annotate responses with @ApiOkResponse({ type: YourResponseDto }) (or correct status code decorators).
+16. Use @ApiBody when Swagger can’t infer the request type (unions, generics, etc.).
+17. Export/import DTOs in controllers — unused DTOs won’t appear in the spec.
+18. Declare enums with @ApiProperty({ enum: YourEnum }).
+19. Avoid PartialType without docs — add @ApiPropertyOptional() to keep schema correct.
+20. Regenerate the OpenAPI spec after backend changes before running Orval.
+21. We dont need any migraiotn script as we are using type orm sync mode on 
+22. When I ask you to fix a bug or issue, do not create a new API end-point, and no fallback plan needed, no default value, and no backward compatiability concern needed, use existing end-point and make minimial changes needed for fixing the bug or issue 
+23. When writing unit tests, always follow the Arrange → Act → Assert pattern (with optional Cleanup). Start by arranging only what you need—minimal data, mocks, and state. Then act by calling exactly one function or method under test, keeping this step free of extra logic. Next, assert the expected outcome, focusing on a single behavior per test, whether it’s a return value, a state change, or an error. If necessary, add a cleanup phase to reset mocks or teardown resources. Importantly, only test real logic, not simple data transformations or framework internals, so your tests remain meaningful and maintainable.
+24. When writeing unit test, avoid typing mock data mannually, instead uses @golevelup/ts-jest + useMocker, but if there is type issue, do not use "any" type or "as any" or as "unkwown", but stop and analysis whether there is an interface and type issue exist from code base, and suggest to fix it
+25. When writing unit test, do not over engineer, we only write unit test for signifacant business logic. 
+26. Test files should be organized around business features, not technical implementation. Each test should have a descriptive name that clearly conveys the business scenario it validates, and provide enough context to show which business rules are being tested. Repetitive setup should be minimized with shared helpers or fixtures, and technical edge cases should be separated from core business logic tests. This makes tests easier to read, understand, and maintain, and ensures they reflect real business behavior rather than just code structure.
+27. Unless it is mentioned, do not create a new endpoint in controller or create a new services. We are shaping for changes, dont need to create more endpoints
+28. STOP CREATING MD FILES
+
+### Code Quality Rules
+
+**Variable Naming:**
+- ✅ Use full words for all variables (e.g., `value` not `v`, `format_fraction` not `format_frac`)
+- ✅ Exception variables: use `ex` (e.g., `except Exception as ex:`)
+- ✅ Explicit is better than implicit - readability counts
+- ❌ Flag abbreviations like `v`, `e`, `f`, `i`, `j`, `k`, `n`, `t`, `d`, `s`, `r`, `p`, `m`, `a`, `b`, `c`, `o`, `u`, `x`, `y`, `z` (except `ex` for exceptions)
+
+**Function Structure:**
+- ✅ Extract functions inside functions/methods to class or module level for reusability
+- ✅ Functions must have a single return statement at the end (refactor multiple returns)
+- ❌ Flag nested function definitions
+- ❌ Flag early returns (except for guard clauses that lead to single return)
+
+**Code Style:**
+- ✅ Avoid long if-else chains - use algorithmic or mathematical style instead
+- ✅ Use default parameter values instead of None checks (e.g., `param: set = set()` instead of `param: set = None` with `if param is None: param = set()`)
+- ✅ Break down complex compound statements into intermediate variables for readability (e.g., store `max(...)` expressions in variables before adding them together)
+
+**Django-Specific:**
+- ✅ Use `order_by()` on querysets instead of Python's `sorted()` (Postgres is faster)
+- ✅ Use `values_list()` if a single value is being used from a queryset
+- ✅ Use custom managers for custom queryset methods
+- ✅ Use `logger` instead of `self.stdout.write` in management commands
+- ✅ Import statements must be at module root level (not inside functions/classes), except:
+  - In a models file importing from another models file that is in apps
+  - When it would cause a circular reference
+
+**Terminal Output:**
+- ✅ Use `colorama` library for terminal colors (not ANSI codes)
+
+**Testing:**
+- ✅ Test files go in `backend/testing/` for easier management
+
+### PR Review Checklist
+
+When reviewing code, check for:
+
+1. **Variable Names**: All variables use full words, no single-letter abbreviations (except `ex` for exceptions)
+2. **Function Structure**: No nested functions, single return at end
+3. **Control Flow**: No long if-else chains (use algorithmic patterns)
+4. **Default Parameters**: Using default values instead of None checks where appropriate
+5. **Readability**: Complex compound statements broken down into intermediate variables
+6. **Django Queries**: Using `order_by()` not `sorted()`, using `values_list()` for single values
+7. **Logger**: Using `logger` at module level, not `self.stdout.write`
+8. **Error Handling**: Exception variables use `ex` (e.g., `except Exception as ex:`)
+
+### Review Comment Format
+
+When flagging issues, use this structure:
+
+**Issue:** [Brief description of the violation]
+**Rule:** [Reference to specific rule from projectrule.mdc]
+**Suggestion:** [Specific code example showing the fix]
+**Why:** [Brief explanation of the benefit]
+
+Example:
+```
+**Issue:** Exception variable uses abbreviation `e` instead of `ex`
+**Rule:** Exception variables should use `ex` (e.g., `except Exception as ex:`)
+**Suggestion:** Change `except Exception as e:` to `except Exception as ex:`
+**Why:** Follows project naming conventions for exception handling
+```

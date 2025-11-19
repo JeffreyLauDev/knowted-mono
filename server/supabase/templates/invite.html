@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitation to Join Knowted</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .content {
+            padding: 40px 30px;
+            background-color: #ffffff;
+        }
+        .welcome-text {
+            font-size: 18px;
+            color: #4b5563;
+            margin-bottom: 24px;
+        }
+        .organization-name {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .button {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin: 24px 0;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+        .button:hover {
+            transform: translateY(-1px);
+        }
+        .expiry-notice {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 24px;
+            text-align: center;
+        }
+        .footer {
+            padding: 24px;
+            text-align: center;
+            background-color: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+        }
+        .footer p {
+            margin: 8px 0;
+            color: #6b7280;
+            font-size: 13px;
+        }
+        .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 16px;
+        }
+        .divider {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin: 24px 0;
+        }
+        .social-links {
+            margin-top: 16px;
+        }
+        .social-links a {
+            color: #4f46e5;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Knowted!</h1>
+        </div>
+        <div class="content">
+            <p class="welcome-text">Hello {{ .Name }},</p>
+            <p>You've been invited to join <span class="organization-name">{{ .OrganizationName }}</span> on Knowted. We're excited to have you on board!</p>
+            
+        <div style="text-align: center;">
+                <a href="{{ .ConfirmationURL }}" class="button">Accept Invitation</a>
+            </div>
+
+            <p class="expiry-notice">This invitation will expire in 7 days.</p>
+            
+            <div class="divider"></div>
+            
+            <p style="color: #6b7280; font-size: 14px;">
+                If you didn't expect this invitation, you can safely ignore this email.
+            </p>
+        </div>
+        <div class="footer">
+            <p>This is an automated message, please do not reply to this email.</p>
+            <p>&copy; {{ .Year }} Knowted. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://twitter.com/knowted">Twitter</a> •
+                <a href="https://linkedin.com/company/knowted">LinkedIn</a> •
+                <a href="https://github.com/knowted">GitHub</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

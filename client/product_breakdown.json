@@ -1,0 +1,229 @@
+{
+  "timeline": [
+    {
+      "month": 1,
+      "name": "Core System Foundations & User Management",
+      "goals": [
+        "Establish backend infrastructure and development workflow",
+        "Implement full user authentication and checkbox-based access system (per-project)",
+        "Lay groundwork for project management features"
+      ],
+      "technical_setup": [
+        "Project scaffolding (repo setup, Docker, CI/CD pipeline)",
+        "Backend API initialization using Supabase",
+        "Database schema setup (PostgreSQL with migrations)",
+        "Environment configuration (.env, secrets management, staging/production separation)"
+      ],
+      "modules": [
+        {
+          "name": "User Management & Authentication",
+          "features": [
+            "User registration with email verification",
+            "Secure login with JWT-based or session authentication",
+            "Enabling RLS and project permission settings",
+            "Password reset via secure tokens",
+            "User profile management",
+            "Session & activity tracking (audit log)",
+            "Assign users to projects with custom roles and permissions"
+          ]
+        },
+        {
+          "name": "Project Setup",
+          "features": [
+            "Project entity definition and API endpoints",
+            "Project creation with defined stages (customizable per project)",
+            "Assigning users and defining roles/permissions per project",
+            "Attach documents, videos, and project details during setup",
+            "Archive & restore project features",
+            "Predefined templates setup"
+          ]
+        },
+        {
+          "name": "Frontend UI",
+          "features": [
+            "User login/register interface",
+            "Profile page (editable fields)",
+            "Project dashboard shell (navigation, sidebar)",
+            "Basic form validation and error handling"
+          ]
+        }
+      ],
+      "deliverables": [
+        "Source code pushed with modular structure",
+        "Working user auth flows on staging",
+        "Full API documentation (Swagger/Postman)",
+        "Bi-weekly client demo",
+        "Initial unit tests (~40% coverage)"
+      ]
+    },
+    {
+      "month": 2,
+      "name": "Project Management, Documents, Tasks & Dashboard",
+      "goals": [
+        "Implement core modules: project tracking, task management, and document handling",
+        "Introduce dashboard functionality",
+        "Begin real-time capabilities (calendar, notifications)"
+      ],
+      "modules": [
+        {
+          "name": "Project Management Features",
+          "features": [
+            "Project timeline and milestone management",
+            "Metadata tagging (e.g., project type, location, status)",
+            "Status transitions (e.g., initiated, in progress, completed)",
+            "Multi-project dashboard",
+            "Project-specific update section to attach updates with documents and videos"
+          ]
+        },
+        {
+          "name": "Task Management",
+          "features": [
+            "Task creation and assignment",
+            "Due date and priority setting",
+            "Task dependencies and critical path calculation",
+            "Stage-based workflows and reusable templates"
+          ]
+        },
+        {
+          "name": "Document & Media Management",
+          "features": [
+            "Secure file upload for PDFs, Images, DOCX, and Videos",
+            "Categorization and tagging by project and stage",
+            "In-app PDF viewer with annotation",
+            "Version control and approval workflows",
+            "Video upload with streaming capability for site update reports",
+            "Search functionality and access permissions"
+          ]
+        },
+        {
+          "name": "Dashboard Functionality",
+          "features": [
+            "Calendar integration",
+            "Real-time overview widgets (active projects, pending tasks)",
+            "Contractor activity logs",
+            "Quick links to documents, videos, and tasks"
+          ]
+        },
+        {
+          "name": "Frontend UI",
+          "features": [
+            "Project view with Gantt chart",
+            "Task Kanban/Board and List view",
+            "Drag and drop task reordering",
+            "Document and video center interface with preview support"
+          ]
+        }
+      ],
+      "deliverables": [
+        "Fully functional project/task/document/video APIs",
+        "User stories mapped with UI elements",
+        "Integration tests (~60% test coverage)",
+        "Second bi-weekly progress demo",
+        "Detailed developer and admin guide"
+      ]
+    },
+    {
+      "month": 3,
+      "name": "Communication, Reporting, AI Agent MVP, Payment & Mobile Readiness",
+      "goals": [
+        "Finalize team collaboration features",
+        "Introduce real-time notification system",
+        "Develop reporting tools and analytics dashboard",
+        "Prototype AI-based progress tracker",
+        "Implement payment gateway integration with Stripe",
+        "Prepare for mobile responsiveness and offline features"
+      ],
+      "modules": [
+        {
+          "name": "Communication Features",
+          "features": [
+            "In-app messaging (Supabase)",
+            "Comment threads on tasks and documents",
+            "@Mention functionality",
+            "Meeting notes and media uploads (including videos)",
+            "External email integration for notifications"
+          ]
+        },
+        {
+          "name": "Notifications",
+          "features": [
+            "Central notification hub",
+            "Email and in-app alerts",
+            "Task/reminder scheduling",
+            "Escalation alerts (missed deadlines, delays)",
+            "Custom user preference settings"
+          ]
+        },
+        {
+          "name": "Reporting and Analytics",
+          "features": [
+            "Weekly and monthly progress reports",
+            "Budget vs actual cost graphs",
+            "Performance indicators per contractor/team",
+            "Custom report builder (with PDF/Excel export)",
+            "Timeline, issue, and material analytics"
+          ]
+        },
+        {
+          "name": "AI Agent (Prototype)",
+          "features": [
+            "Voice-based interface using Twilio or Dialogflow",
+            "Voice prompts to workers for status collection",
+            "Dashboard update based on verbal inputs",
+            "CRM integration for workers"
+          ]
+        },
+        {
+          "name": "Payment Integration",
+          "features": [
+            "Integration with Stripe for project billing and payment collection",
+            "Create plans, track usage, and manage billing history",
+            "Secure payment links and invoice support",
+            "Admin overview of payment status per project"
+          ]
+        },
+        {
+          "name": "Mobile Compatibility",
+          "features": [
+            "Responsive layout (Tailwind/Bootstrap)",
+            "Device-specific layout testing (iOS, Android)",
+            "Push notifications (mobile/browser)",
+            "Location tagging for on-site updates"
+          ]
+        }
+      ],
+      "deliverables": [
+        "AI prototype connected to voice gateway (Twilio)",
+        "Messaging and reporting fully integrated",
+        "Stripe payment system live and functional",
+        "Finalized frontend UI (desktop + mobile responsive)",
+        "System performance benchmarks and optimization report",
+        "Complete staging deployment for testing and feedback"
+      ]
+    }
+  ],
+  "final_deliverables": {
+    "product": "ConstructPro SaaS MVP: Fully operational cloud-hosted solution",
+    "source_code_documentation": [
+      "Modular source code with README",
+      "API references and endpoints schema",
+      "Developer setup guide"
+    ],
+    "user_manuals": [
+      "End-user documentation",
+      "Admin and client onboarding guides"
+    ],
+    "test_reports": [
+      "Automated test coverage results",
+      "Manual QA/UAT reports"
+    ],
+    "deployment": [
+      "Staging and production environments",
+      "Deployment pipeline (GitHub Actions or similar)"
+    ],
+    "client_handover": [
+      "Final demo and walkthrough",
+      "Access credentials and credentials vault"
+    ]
+  }
+} 
