@@ -4,10 +4,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { defineConfig } from "vite";
 
-// Get the directory where this config file is located
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const srcPath = path.resolve(__dirname, 'src');
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -26,7 +24,8 @@ export default defineConfig(({ mode }) => ({
   ].filter(Boolean),
   resolve: {
     alias: {
-      "@": srcPath,
-    }
+      "@": path.resolve(__dirname, "./src"),
+    },
+    extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json'],
   },
 }));
