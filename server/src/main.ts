@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 import { AppModule } from "./app.module";
 import { PinoLoggerService } from "./common/logger/pino-logger.service";
+import { AppDataSource } from "./datasource";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -15,6 +16,56 @@ async function bootstrap() {
   // Get the custom logger service and use it as the main NestJS logger
   const loggerService = app.get(PinoLoggerService);
   app.useLogger(loggerService);
+
+  // Run database migrations automatically if enabled
+  const shouldRunMigrations =
+    process.env.RUN_MIGRATIONS_ON_STARTUP !== "false" &&
+    (process.env.NODE_ENV === "production" ||
+      process.env.RUN_MIGRATIONS_ON_STARTUP === "true");
+
+  if (shouldRunMigrations) {
+    try {
+      loggerService.log("Checking for pending database migrations...", "MIGRATION");
+      
+      // Initialize the DataSource if not already initialized
+      if (!AppDataSource.isInitialized) {
+        await AppDataSource.initialize();
+        loggerService.log("Database connection initialized for migrations", "MIGRATION");
+      }
+
+      // Run pending migrations (TypeORM only runs migrations that haven't been executed)
+      // This is safe - it will only run pending migrations and return an empty array if none are needed
+      const executedMigrations = await AppDataSource.runMigrations();
+      
+      if (executedMigrations && executedMigrations.length > 0) {
+        loggerService.log(
+          `Successfully executed ${executedMigrations.length} migration(s)`,
+          "MIGRATION",
+          {
+            executedMigrations: executedMigrations.map((m) => m.name),
+          },
+        );
+      } else {
+        loggerService.log("Database is up to date - no pending migrations", "MIGRATION");
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      loggerService.error(
+        `Failed to run database migrations: ${errorMessage}`,
+        errorStack,
+        "MIGRATION",
+      );
+      // Don't crash the app if migrations fail - log and continue
+      // This allows the app to start even if there's a migration issue
+      // The admin can fix it manually
+    }
+  } else {
+    loggerService.log(
+      "Automatic migrations are disabled (set RUN_MIGRATIONS_ON_STARTUP=true to enable)",
+      "MIGRATION",
+    );
+  }
 
   // Get the underlying Express app to configure body size limits
   const expressApp = app.getHttpAdapter().getInstance();

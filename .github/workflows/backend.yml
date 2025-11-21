@@ -1,4 +1,4 @@
-name: Backend Deployment
+name: Backend CI/CD Pipeline
 
 on:
   push:
@@ -10,8 +10,8 @@ on:
 
 env:
   REGISTRY: registry.digitalocean.com
-  IMAGE_NAME: knowted
-  REGISTRY_NAME: knowted-backend
+  IMAGE_NAME: knowted-backend
+  REGISTRY_NAME: knowted
 
 jobs:
   test:
@@ -32,8 +32,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
-          cache-dependency-path: server/pnpm-lock.yaml
+          cache: ''
 
       - name: Install dependencies
         working-directory: ./server
@@ -46,6 +45,49 @@ jobs:
       - name: Run unit tests
         working-directory: ./server
         run: pnpm test:ci
+
+  migrate:
+    name: Run Database Migrations
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: |
+      (github.ref == 'refs/heads/dev' && contains(github.event.head_commit.message, 'migration') == false) ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'migrate')
+    environment: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: ''
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: pnpm install --frozen-lockfile
+
+      - name: Run database migrations
+        working-directory: ./server
+        env:
+          NODE_ENV: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
+          DB_HOST: ${{ github.ref == 'refs/heads/production' && secrets.PROD_DB_HOST || secrets.DEV_DB_HOST }}
+          DB_PORT: ${{ github.ref == 'refs/heads/production' && secrets.PROD_DB_PORT || secrets.DEV_DB_PORT }}
+          DB_USERNAME: ${{ github.ref == 'refs/heads/production' && secrets.PROD_DB_USERNAME || secrets.DEV_DB_USERNAME }}
+          DB_PASSWORD: ${{ github.ref == 'refs/heads/production' && secrets.PROD_DB_PASSWORD || secrets.DEV_DB_PASSWORD }}
+          DB_DATABASE: ${{ github.ref == 'refs/heads/production' && secrets.PROD_DB_DATABASE || secrets.DEV_DB_DATABASE }}
+        run: |
+          echo "🗄️ Running database migrations..."
+          npm run typeorm -- migration:run -d typeorm.config.ts
+          echo "✅ Migrations completed!"
 
   build-and-push:
     name: Build and Deploy Backend
@@ -99,5 +141,3 @@ jobs:
           echo "✅ Successfully pushed backend image to ${{ env.ENVIRONMENT_NAME }}!"
           echo "🏷️  Image tagged as: ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT_TAG }}"
           echo "📦 SHA: ${{ github.sha }}"
-          echo "🚀 Build completed at $(date)"
-
