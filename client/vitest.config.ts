@@ -9,6 +9,9 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+    testTimeout: 10000, // 10 seconds timeout per test
+    hookTimeout: 10000, // 10 seconds timeout for hooks
+    teardownTimeout: 5000, // 5 seconds for cleanup
     coverage: {
       reporter: ['text', 'json', 'html'],
       include: ['src/**/*.ts', 'src/**/*.tsx'],

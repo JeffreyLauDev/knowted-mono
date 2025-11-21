@@ -1,14 +1,29 @@
 import '@testing-library/jest-dom';
 import * as matchers from '@testing-library/jest-dom/matchers';
 import { cleanup } from '@testing-library/react';
+import { QueryClient } from '@tanstack/react-query';
 import { afterAll, afterEach, beforeAll, expect, vi } from 'vitest';
 
 // Mock Supabase client
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     auth: {
-      getSession: vi.fn(),
-      onAuthStateChange: vi.fn(),
+      getSession: vi.fn().mockResolvedValue({
+        data: { session: null },
+        error: null
+      }),
+      getUser: vi.fn().mockResolvedValue({
+        data: { user: null },
+        error: null
+      }),
+      onAuthStateChange: vi.fn().mockReturnValue({
+        data: {
+          subscription: {
+            id: 'test-subscription',
+            unsubscribe: vi.fn()
+          }
+        }
+      }),
       signInWithPassword: vi.fn(),
       signUp: vi.fn(),
       signOut: vi.fn()
@@ -48,9 +63,30 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
   disconnect: vi.fn()
 }));
 
+// Configure React Query for tests to prevent hanging
+// This disables refetchInterval and reduces retries to prevent tests from hanging
+global.testQueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchInterval: false, // Disable refetchInterval in tests
+      gcTime: 0, // Immediately garbage collect
+    },
+    mutations: {
+      retry: false,
+    },
+  },
+});
+
 // Clean up test data after each test
 afterEach(async () => {
-  // Add any cleanup logic here
+  // Clear all mocks
+  vi.clearAllMocks();
+  // Clear React Query cache
+  global.testQueryClient.clear();
 });
 
 // Global setup before all tests

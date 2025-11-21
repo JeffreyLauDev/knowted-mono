@@ -1,0 +1,17 @@
+{
+  "name": "knowted-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Knowted monorepo - client, server, aiagent, and meetingbot",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3"
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
+}
+
